@@ -118,6 +118,22 @@ class VentanaPrincipal(QMainWindow):
         caixaOcupacionPAS.addWidget(self.cmbOcupacion)
         maiaPAS.addLayout(caixaOcupacionPAS)
 
+        # Nome PAS
+        caixaNomePAS = QHBoxLayout()
+        lblNome = QLabel("Nome: ")
+        self.txtNomePAS = QtWidgets.QLineEdit()
+        caixaNomePAS.addWidget(lblNome)
+        caixaNomePAS.addWidget(self.txtNomePAS)
+        maiaPAS.addLayout(caixaNomePAS)
+
+        # Apelido PAS
+        caixaApelidoPAS = QHBoxLayout()
+        lblApelido = QLabel("Apelido: ")
+        self.txtApelidoPAS = QtWidgets.QLineEdit()
+        caixaApelidoPAS.addWidget(lblApelido)
+        caixaApelidoPAS.addWidget(self.txtApelidoPAS)
+        maiaPAS.addLayout(caixaApelidoPAS)
+
         panelPAS.setLayout(maiaPAS)
 
         self.tarxetas.addWidget(panelAlumno)
