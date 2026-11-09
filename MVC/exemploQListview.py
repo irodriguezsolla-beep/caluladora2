@@ -61,10 +61,13 @@ class FiestraPrincipal(QMainWindow):
 
     def on_btnFeito_clicked(self):
         indices = self.lstTarefas.selectedIndexes()
-        if indices:
-            for indice in indices:
-                self.modelo.tareafas[indice.row()][0]=True
-            self.modelo.layoutChanged.emit()
+
+        for indice in indices:
+            _,texto=self.listaTarefas[indice.row()]
+            self.listaTarefas[indice.row()]=(True,texto)
+
+        self.modelo.layoutChanged.emit()
+        self.lstTarefas.clearSelection()
 
 
     def on_btnEngadir_clicked(self):
