@@ -1,168 +1,72 @@
 import sys
-from PyQt6.QtCore import Qt
-from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QComboBox,
-    QWidget, QStackedLayout, QGridLayout, QLabel, QRadioButton,
-    QHBoxLayout, QGroupBox
-)
+import math
 
-from MVC.ModeloTarefas import ModeloTarefas
+from PyQt6.QtWidgets import (QMainWindow, QApplication, QVBoxLayout, QPushButton, QWidget, QLabel, QLineEdit,
+                             QHBoxLayout, QListView)
+from PyQt6.QtGui import QColor, QPalette
+
+from ModeloTarefas import ModeloTarefas
 
 
-class VentanaPrincipal(QMainWindow):
+class FiestraPrincipal(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Ventana Principal")
-        listaTarefas = [(True,"Ir o centro DC"),(False,"Ir o ximnaxio"),(False,"Ir a compra"),]
-        self.modelo = ModeloTarefas(listaTarefas)
+
+        self.setWindowTitle("exemplo QListView")
+
+        self.setMinimumSize(400, 600)
+        self.setMaximumSize(400, 400)
+
+        self.listaTarefas = [(True, "Ir o centro DC"), (False, "Ir o ximnasio"), (False, "Ir a compra"),(False, "Outra")]
+
+        self.modelo = ModeloTarefas(self.listaTarefas)
 
         caixaV = QVBoxLayout()
 
         self.lstTarefas = QListView()
         self.lstTarefas.setModel(self.modelo)
-        self.lstTarefas.setSelectionMode(Ql)
+        self.lstTarefas.setSelectionMode(QListView.SelectionMode.MultiSelection)
+        caixaV.addWidget(self.lstTarefas)
 
-        self.cmbTipo = QComboBox()
-        self.cmbTipo.addItem("Alumno")
-        self.cmbTipo.addItems(("Profesores", "Pas"))
-        self.cmbTipo.setCurrentIndex(-1)
-        self.cmbTipo.currentIndexChanged.connect(self.on_cmbTipo_setCurrentChanged)
+        caixaBotons = QHBoxLayout()
+        btnBorrar = QPushButton("Borrar")
+        btnBorrar.clicked.connect(self.on_btnBorrar_clicked)
+        btnFeito = QPushButton("Feito")
+        btnFeito.clicked.connect(self.on_btnFeito_clicked)
 
-        caixaV.addWidget(self.cmbTipo)
+        caixaBotons.addWidget(btnBorrar)
+        caixaBotons.addWidget(btnFeito)
 
-        self.tarxetas = QStackedLayout()
+        caixaV.addLayout(caixaBotons)
 
-        # Panel Alumno
-        panelAlumno = QWidget()
-        maiaAlumno = QGridLayout()
+        self.txtTarefa = QLineEdit()
+        caixaV.addWidget(self.txtTarefa)
+        btnEngadir = QPushButton("Engadir Tarefa")
+        btnEngadir.clicked.connect(self.on_btnEngadir_clicked)
+        caixaBotons.addWidget(btnEngadir)
 
-        lblCiclo = QLabel("Ciclo")
-        self.cmdCiclo = QComboBox()
-        ciclos = ("DAM", "ASIR", "SMR", "IEA", "ADF")
-        self.cmdCiclo.addItems(ciclos)
-        self.cmdCiclo.setCurrentIndex(-1)
 
-        self.rbtPrimeiro = QRadioButton("Primeiro")
-        self.rbtSegundo = QRadioButton("Segundo")
+        contenedor = QWidget()
+        contenedor.setLayout(caixaV)
+        self.setCentralWidget(contenedor)
 
-        caixaRadio = QHBoxLayout()
-        caixaRadio.addWidget(self.rbtPrimeiro)
-        caixaRadio.addWidget(self.rbtSegundo)
+        self.show()
 
-        self.cmbAnoMatricula = QComboBox()
-        cursosMatricula = ("25/26", "26/27", "27/28")
-        self.cmbAnoMatricula.addItems(cursosMatricula)
+    def on_btnBorrar_clicked(self):
+        pass
 
-        lblNomeNai = QLabel("Nome Nai")
-        self.txtNomeNai = QtWidgets.QLineEdit()
-        lblNomePai = QLabel("Nome Pai")
-        self.txtNomePai = QtWidgets.QLineEdit()
+    def on_btnFeito_clicked(self):
+        pass
 
-        maiaAlumno.addWidget(lblCiclo, 0, 0)
-        maiaAlumno.addWidget(self.cmdCiclo, 0, 1)
-        maiaAlumno.addLayout(caixaRadio, 1, 0, 1, 2)
-        maiaAlumno.addWidget(QLabel("Ano Matrícula"), 2, 0)
-        maiaAlumno.addWidget(self.cmbAnoMatricula, 2, 1)
-        maiaAlumno.addWidget(lblNomeNai, 3, 0)
-        maiaAlumno.addWidget(self.txtNomeNai, 3, 1)
-        maiaAlumno.addWidget(lblNomePai, 4, 0)
-        maiaAlumno.addWidget(self.txtNomePai, 4, 1)
+    def on_btnEngadir_clicked(self):
+        txt = self.txtTarefa.text()
 
-        panelAlumno.setLayout(maiaAlumno)
-
-        # Paneles Profesores
-        panelProfesores = QWidget()
-        maiaProfesor = QVBoxLayout()
-
-        # RadioButton Titor
-        self.rbtTitor = QRadioButton("É titor?")
-        maiaProfesor.addWidget(self.rbtTitor)
-
-        # Selección de Ciclo
-        caixaCicloProf = QHBoxLayout()
-        lblCicloProf = QLabel("Ciclo:")
-        self.cmbCicloProf = QComboBox()
-        self.cmbCicloProf.addItems(ciclos)
-        self.cmbCicloProf.setCurrentIndex(-1)
-        caixaCicloProf.addWidget(lblCicloProf)
-        caixaCicloProf.addWidget(self.cmbCicloProf)
-        maiaProfesor.addLayout(caixaCicloProf)
-
-        # Anos (Primeiro / Segundo)
-        grupoAnos = QGroupBox("Curso")
-        caixaAnos = QHBoxLayout()
-        self.rbtPrimeiroAno = QRadioButton("1º Ano")
-        self.rbtSegundoAno = QRadioButton("2º Ano")
-        caixaAnos.addWidget(self.rbtPrimeiroAno)
-        caixaAnos.addWidget(self.rbtSegundoAno)
-        grupoAnos.setLayout(caixaAnos)
-        maiaProfesor.addWidget(grupoAnos)
-
-        # Nivel do Ciclo
-        grupoNivel = QGroupBox("Nivel do ciclo")
-        caixaNivel = QHBoxLayout()
-        self.rbtBasico = QRadioButton("Ciclo Básico")
-        self.rbtMedio = QRadioButton("Ciclo Medio")
-        self.rbtSuperior = QRadioButton("Ciclo Superior")
-        caixaNivel.addWidget(self.rbtBasico)
-        caixaNivel.addWidget(self.rbtMedio)
-        caixaNivel.addWidget(self.rbtSuperior)
-        grupoNivel.setLayout(caixaNivel)
-        maiaProfesor.addWidget(grupoNivel)
-
-        panelProfesores.setLayout(maiaProfesor)
-
-        # PAS
-        panelPAS = QWidget()
-        maiaPAS = QVBoxLayout()
-        Ocupaciones = ("Secretario", "Vedel")
-
-        # Selección de PAS
-        caixaOcupacionPAS = QHBoxLayout()
-        lblOcupacion = QLabel("Ocupación: ")
-        self.cmbOcupacion = QComboBox()
-        self.cmbOcupacion.addItems(Ocupaciones)
-        self.cmbOcupacion.setCurrentIndex(-1)
-        caixaOcupacionPAS.addWidget(lblOcupacion)
-        caixaOcupacionPAS.addWidget(self.cmbOcupacion)
-        maiaPAS.addLayout(caixaOcupacionPAS)
-
-        # Nome PAS
-        caixaNomePAS = QHBoxLayout()
-        lblNome = QLabel("Nome: ")
-        self.txtNomePAS = QtWidgets.QLineEdit()
-        caixaNomePAS.addWidget(lblNome)
-        caixaNomePAS.addWidget(self.txtNomePAS)
-        maiaPAS.addLayout(caixaNomePAS)
-
-        # Apelido PAS
-        caixaApelidoPAS = QHBoxLayout()
-        lblApelido = QLabel("Apelido: ")
-        self.txtApelidoPAS = QtWidgets.QLineEdit()
-        caixaApelidoPAS.addWidget(lblApelido)
-        caixaApelidoPAS.addWidget(self.txtApelidoPAS)
-        maiaPAS.addLayout(caixaApelidoPAS)
-
-        panelPAS.setLayout(maiaPAS)
-
-        self.tarxetas.addWidget(panelAlumno)
-        self.tarxetas.addWidget(panelProfesores)
-        self.tarxetas.addWidget(panelPAS)
-
-        caixaV.addLayout(self.tarxetas)
-
-        container = QWidget()
-        container.setLayout(caixaV)
-        self.setCentralWidget(container)
-
-    def on_cmbTipo_setCurrentChanged(self, index):
-        if index >= 0:
-            self.tarxetas.setCurrentIndex(index)
-
+        if txt != "":
+            self.listaTarefas.append((False, txt))
+            self.txtTarefa.clear()
+            self.modelo.layoutChanged.emit()
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = VentanaPrincipal()
-    window.show()
-    sys.exit(app.exec())
+    aplicacion = QApplication(sys.argv)
+    fiestra = FiestraPrincipal()
+    aplicacion.exec()
