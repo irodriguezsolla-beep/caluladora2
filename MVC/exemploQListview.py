@@ -17,7 +17,7 @@ class FiestraPrincipal(QMainWindow):
         self.setMinimumSize(400, 600)
         self.setMaximumSize(400, 400)
 
-        self.listaTarefas = [(True, "Ir o centro DC"), (False, "Ir o ximnasio"), (False, "Ir a compra"),(False, "Outra")]
+        self.listaTarefas = [[True, "Ir o centro DC"], [False, "Ir o ximnasio"], [False, "Ir a compra"],[False, "Outra"]]
 
         self.modelo = ModeloTarefas(self.listaTarefas)
 
@@ -53,16 +53,25 @@ class FiestraPrincipal(QMainWindow):
         self.show()
 
     def on_btnBorrar_clicked(self):
-        pass
+        pos = self.lstTarefas.selectedIndexes()
+        for indice in pos:
+            self.listaTarefas.pop(indice.row())
+        self.modelo.layoutChanged.emit()
+        self.lstTarefas.clearSelection()
 
     def on_btnFeito_clicked(self):
-        pass
+        indices = self.lstTarefas.selectedIndexes()
+        if indices:
+            for indice in indices:
+                self.modelo.tareafas[indice.row()][0]=True
+            self.modelo.layoutChanged.emit()
+
 
     def on_btnEngadir_clicked(self):
         txt = self.txtTarefa.text()
 
         if txt != "":
-            self.listaTarefas.append((False, txt))
+            self.listaTarefas.append([False, self.txtTarefa.text()])
             self.txtTarefa.clear()
             self.modelo.layoutChanged.emit()
 

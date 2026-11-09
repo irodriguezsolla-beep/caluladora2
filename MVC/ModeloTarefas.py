@@ -7,7 +7,7 @@ tick = QImage("tick.png").scaled(16,16)
 class ModeloTarefas(QAbstractListModel):
     def __init__(self, tarefas = None):
         super().__init__()
-        self.tarefas = tarefas or ()
+        self.tarefas = tarefas or []
 
 
     def data(self, indice, rol):
