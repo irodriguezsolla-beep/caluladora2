@@ -1,5 +1,6 @@
 from PyQt6.QtCore import Qt,QAbstractListModel
 from PyQt6.QtGui import QImage
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QMainWindow
 
 tick = QImage("tick.png").scaled(16,16)
@@ -18,7 +19,10 @@ class ModeloTarefas(QAbstractListModel):
             estado,_ = self.tarefas[indice.row()]
             if estado:
                 return tick
-
+        if rol == Qt.ItemDataRole.BackgroundRole:
+            estado,_ = self.tarefas[indice.row()]
+            if not estado:
+                return QColor("lightpink")
 
     def rowCount(self, indice):
         return len(self.tarefas)
